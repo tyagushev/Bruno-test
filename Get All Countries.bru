@@ -1,0 +1,42 @@
+meta {
+  name: Get All Countries
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://restcountries.com/v3.1/all
+  body: none
+  auth: none
+}
+
+tests {
+  // Тест на статус-код ответа 200
+  test("Статус-код должен быть 200", async () => {
+      const response = await send();
+      expect(response.status).to.equal(200);
+  });
+  
+  // Тест на то, что тело ответа не пустое
+  test("Тело ответа не должно быть пустым", async () => {
+      const response = await send();
+      const data = response.json();
+      expect(data).to.not.be.null;
+      expect(data).to.be.an('array').that.is.not.empty;
+  });
+  
+  // Тест на то, что тело ответа содержит данные о странах
+  test("Тело ответа должно содержать данные о странах", async () => {
+      const response = await send();
+      const data = response.json();
+      expect(data).to.be.an('array');
+      data.forEach(country => {
+          expect(country).to.have.property('name');
+          expect(country.name).to.have.property('common');
+      });
+  });
+  
+  
+  
+  
+}
